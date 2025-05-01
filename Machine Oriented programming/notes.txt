@@ -1,0 +1,6 @@
+to run code 
+cd scr
+gcc -Wall -Wextra main.c deck.c -o yukon
+./yukon
+
+get a 13 x 4 grid of []
