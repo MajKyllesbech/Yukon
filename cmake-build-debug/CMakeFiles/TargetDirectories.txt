@@ -1,0 +1,3 @@
+C:/Users/danie/CLionProjects/Yukon/cmake-build-debug/CMakeFiles/Yukon.dir
+C:/Users/danie/CLionProjects/Yukon/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/Users/danie/CLionProjects/Yukon/cmake-build-debug/CMakeFiles/rebuild_cache.dir
