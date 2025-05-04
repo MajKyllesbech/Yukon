@@ -3,6 +3,7 @@
 #include <string.h>
 #include "card.h"
 #include <stdlib.h>
+#include <time.h>
 
 
 extern Node* load_deck_from_file(const char* filename);
@@ -25,7 +26,7 @@ void flipCards(Node* columns[7], int face_up){
 
 void layout(Node* deck, Node* columns[7]){
     int sizes[7]={1, 6, 7, 8, 9, 10, 11};
-    Node* tails[7]={NULL};
+    Node* tails[7]={NULL, NULL, NULL, NULL, NULL, NULL, NULL};
     Node* current = deck;
 
     for(int col = 0; col < 7; col++){
@@ -37,9 +38,12 @@ void layout(Node* deck, Node* columns[7]){
             if (!columns[col]) {
                 columns[col] = current;
                 tails[col] = current;
-            } else {
+            } else if (tails[col]){
                 tails[col]->next = current;
                 tails[col] = current;
+            } else{
+                columns[col]=current;
+                tails[col]=current;
             }
             current = next;
                  }
@@ -85,7 +89,7 @@ int main() {
     //  char filename[100];
     //  printf("Enter file name to load deck: ");
     // scanf("%s", filename);
-
+    srand(time(NULL));
     Node *deck = load_deck_from_file("deck.txt");
     Node* columns[7]={NULL};
     layout(deck, columns);
@@ -99,14 +103,22 @@ int main() {
 
         layoutPrint(columns);
         //print_deck(deck);
-        printf("\nEnter SW to Show Cards, Enter HC to Hide Cards, Enter QQ to EXIT.\n");
+        printf("\nEnter SW to Show Cards, Enter HC to Hide Cards, SR to Shuffle Cards, Enter QQ to EXIT.\n");
         printf("Enter Input:  ");
         scanf("%3s", input);
 
         if (strcmp(input, "SW") == 0) {
             flipCards(columns, 1);
+            printf("Cards Shown");
         } else if (strcmp(input, "HC") == 0) {
             flipCards(columns, 0);
+            printf("Cards Hidden");
+        } else if (strcmp(input, "SR") == 0) {
+            deck = load_deck_from_file("deck.txt");
+            deck=shuffleDeck(deck);
+            layout(deck,columns);
+            //flipCards(columns,1);
+            printf("Deck Shuffled");
         } else if (strcmp(input, "QQ") == 0) {
             break;
         }

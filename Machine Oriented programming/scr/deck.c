@@ -104,3 +104,48 @@ Node* load_deck_from_file(const char* filename) {
     return deck;
 }
 
+int getLength(Node* head){
+    int count = 0;
+    while(head){
+        count++;
+        head = head->next;
+    }
+    return count;
+}
+
+void insertCardRandomly(Node** head, Node* newNode, int index){
+    if(index==0 || *head ==NULL){
+        newNode->next=*head;
+        *head=newNode;
+        return;
+    }
+    Node* current = *head;
+    for(int i = 0; i<index - 1; i++){
+        if(current->next==NULL)
+            break;
+        current=current->next;
+    }
+        newNode->next=current->next;
+        current->next=newNode;
+}
+
+Node* shuffleDeck(Node* deck){
+    printf("Shuffle");
+    Node* shuffled = NULL;
+    int count = 0;
+    while(deck !=NULL){
+        Node* card = deck;
+        deck = deck->next;
+        card->next =NULL;
+        int length = getLength(shuffled);
+        int random = (length==0)?0:rand()%(length+1);
+        //testing
+        printf("Inserting %c%c at index %d\n", card->card.rank, card->card.suit,random);
+        insertCardRandomly(&shuffled,card,random);
+        count++;
+    }
+    //testing
+    printf("Total inserted into shuffled deck: %d\n", count);
+    return shuffled;
+}
+

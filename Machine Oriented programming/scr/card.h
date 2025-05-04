@@ -16,3 +16,5 @@ typedef struct Node {
 #endif
 
 Node* load_deck_from_file(const char* filename);
+
+Node* shuffleDeck(Node* deck);
