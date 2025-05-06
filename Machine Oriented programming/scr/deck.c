@@ -149,3 +149,69 @@ Node* shuffleDeck(Node* deck){
     return shuffled;
 }
 
+Node* siSplit(Node* deck){
+    Node* splitDeck1 = deck;
+    Node* splitDeck2 = NULL;
+    Node* current = deck;
+    int i = 1;
+    int split = 26;
+    while(current != NULL && i<split){
+        current = current->next;
+        i++;
+    }
+    if(current == NULL) return NULL;
+    splitDeck2=current->next;
+    current->next=NULL;
+    Node* newShuffledDeck = NULL;
+    Node* endNode = NULL;
+
+    while(splitDeck1!=NULL||splitDeck2!=NULL){
+        if(splitDeck1 != NULL){
+            Node* next = splitDeck1->next;
+            splitDeck1->next=NULL;
+
+            if(newShuffledDeck==NULL){
+                newShuffledDeck=endNode=splitDeck1;
+            } else{
+                endNode->next=splitDeck1;
+                endNode=splitDeck1;
+            }
+            splitDeck1=next;
+        }
+        if(splitDeck2!=NULL){
+            Node* next = splitDeck2->next;
+            splitDeck2->next=NULL;
+
+            if(newShuffledDeck==NULL){
+                newShuffledDeck=endNode=splitDeck2;
+            }else{
+                endNode->next=splitDeck2;
+                endNode=splitDeck2;
+            }
+            splitDeck2 = next;
+        }
+    }
+    return newShuffledDeck;
+}
+
+Node* rebuildDeckStructure(Node* columns[7]){
+    Node* completeDeck = NULL;
+    Node* end = NULL;
+
+    for(int col = 0; col<7; col++){
+        Node* current = columns[col];
+        while(current){
+            Node* next=current->next;
+            current->next=NULL;
+            if(completeDeck==NULL){
+                completeDeck=end=current;
+            } else{
+                end->next=current;
+                end=current;
+            }
+            current = next;
+        }
+        columns[col]=NULL;
+    }
+    return completeDeck;
+}

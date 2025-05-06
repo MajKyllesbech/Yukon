@@ -26,7 +26,7 @@ void flipCards(Node* columns[7], int face_up){
 
 void layout(Node* deck, Node* columns[7]){
     int sizes[7]={1, 6, 7, 8, 9, 10, 11};
-    Node* tails[7]={NULL, NULL, NULL, NULL, NULL, NULL, NULL};
+    Node* endNode[7]={NULL, NULL, NULL, NULL, NULL, NULL, NULL};
     Node* current = deck;
 
     for(int col = 0; col < 7; col++){
@@ -37,13 +37,13 @@ void layout(Node* deck, Node* columns[7]){
             current->next = NULL;
             if (!columns[col]) {
                 columns[col] = current;
-                tails[col] = current;
-            } else if (tails[col]){
-                tails[col]->next = current;
-                tails[col] = current;
+                endNode[col] = current;
+            } else if (endNode[col]){
+                endNode[col]->next = current;
+                endNode[col] = current;
             } else{
                 columns[col]=current;
-                tails[col]=current;
+                endNode[col]=current;
             }
             current = next;
                  }
@@ -113,6 +113,11 @@ int main() {
         } else if (strcmp(input, "HC") == 0) {
             flipCards(columns, 0);
             printf("Cards Hidden");
+        } else if (strcmp(input, "SI") == 0) {
+            deck = rebuildDeckStructure(columns);
+            deck = siSplit(deck);
+            layout(deck, columns);
+            printf("Cards Split Shuffled");
         } else if (strcmp(input, "SR") == 0) {
             deck = load_deck_from_file("deck.txt");
             deck=shuffleDeck(deck);

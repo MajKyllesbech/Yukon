@@ -18,3 +18,7 @@ typedef struct Node {
 Node* load_deck_from_file(const char* filename);
 
 Node* shuffleDeck(Node* deck);
+
+Node* siSplit(Node* deck);
+
+Node* rebuildDeckStructure(Node* columns[7]);
