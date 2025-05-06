@@ -103,7 +103,7 @@ int main() {
 
         layoutPrint(columns);
         //print_deck(deck);
-        printf("\nEnter SW to Show Cards, Enter HC to Hide Cards, SR to Shuffle Cards, Enter QQ to EXIT.\n");
+        printf("\nEnter SW to Show Cards, HC to Hide Cards, SR to Shuffle Cards, SD <filename> to Save Deck, or QQ to EXIT.\n");
         printf("Enter Input:  ");
         scanf("%3s", input);
 
@@ -126,6 +126,14 @@ int main() {
             printf("Deck Shuffled");
         } else if (strcmp(input, "QQ") == 0) {
             break;
+        }
+        else if (strncmp(input, "SD", 2) == 0) {
+            char filename[50] = "cards.txt"; // Default filename
+            if (strlen(input) > 3) {
+                // Extract the filename (skip "SD" and the space)
+                sscanf(input + 3, "%s", filename);
+            }
+            save_deck_to_file(filename, deck);
         }
 }
 
@@ -151,4 +159,3 @@ int main() {
 
   return 0;
 }
-

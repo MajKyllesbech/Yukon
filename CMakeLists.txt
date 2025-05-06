@@ -8,4 +8,6 @@ include_directories("Machine Oriented programming/scr")
 add_executable(Yukon
         "Machine Oriented programming/scr/main.c"
         "Machine Oriented programming/scr/deck.c"
-        )
+        "Machine Oriented programming/scr/SD.c"
+
+)
