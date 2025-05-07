@@ -124,21 +124,21 @@ int main() {
 
         if (strcmp(input, "SW") == 0) {
             if(playPhase==1){
-                printf("Cant use commands, game is in play phase. Press Q to exit the Play Phase.");
+                printf("Cant use this command, game is in play phase. Press Q to exit the Play Phase.");
             } else {
                 flipCards(columns, 1);
                 printf("Cards Shown");
             }
         } else if (strcmp(input, "HC") == 0) {
             if(playPhase==1){
-                printf("Cant use commands, game is in play phase. Press Q to exit the Play Phase.");
+                printf("Cant use this command, game is in play phase. Press Q to exit the Play Phase.");
             } else {
                 flipCards(columns, 0);
                 printf("Cards Hidden");
             }
         } else if (strcmp(input, "SI") == 0) {
             if(playPhase==1){
-                printf("Cant use commands, game is in play phase. Press Q to exit the Play Phase.");
+                printf("Cant use this command, game is in play phase. Press Q to exit the Play Phase.");
             } else {
                 deck = rebuildDeckStructure(columns);
                 deck = siSplit(deck);
@@ -162,7 +162,7 @@ int main() {
             }
         } else if (strcmp(input, "SR") == 0) {
             if(playPhase==1){
-                printf("Cant use commands, game is in play phase. Press Q to exit the Play Phase.");
+                printf("Cant use this command, game is in play phase. Press Q to exit the Play Phase.");
             } else {
                 deck = load_deck_from_file("deck.txt");
                 deck = shuffleDeck(deck);
@@ -172,7 +172,7 @@ int main() {
             }
         } else if (strcmp(input, "QQ") == 0) {
             if(playPhase==1){
-                printf("Cant use commands, game is in play phase. Press Q to exit the Play Phase.");
+                printf("Cant use this command, game is in play phase. Press Q to exit the Play Phase.");
             } else {
                 break;
             }
