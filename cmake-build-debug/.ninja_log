@@ -1,7 +1,6 @@
 # ninja log v6
 25	428	7682226195114128	CMakeFiles/Yukon.dir/Machine_Oriented_programming/scr/deck.c.obj	20d0c2529c781850
-110	435	7682235085311416	CMakeFiles/Yukon.dir/Machine_Oriented_programming/scr/main.c.obj	9cb98c1e90bf5b86
-438	753	7682226199240154	Yukon.exe	888684d29483d136
-6	1355	7682235957279950	build.ninja	a201ae0ac92f6dae
 65	197	7682235960587948	CMakeFiles/Yukon.dir/Machine_Oriented_programming/scr/SD.c.obj	ce8e39750d355010
+110	435	7682235085311416	CMakeFiles/Yukon.dir/Machine_Oriented_programming/scr/main.c.obj	9cb98c1e90bf5b86
 198	427	7682235961916606	Yukon.exe	70675e12e5aed87b
+6	1355	7683295489342094	build.ninja	a201ae0ac92f6dae
