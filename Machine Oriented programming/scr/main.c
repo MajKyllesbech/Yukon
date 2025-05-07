@@ -48,6 +48,16 @@ void layout(Node* deck, Node* columns[7]){
             current = next;
                  }
         }
+    for(int col = 0; col<7; col++){
+        int numberOfHiddenCards=col;
+        int counter = 0;
+        Node* temp = columns[col];
+        while(temp){
+            temp->face_up=(counter>=numberOfHiddenCards)?1:0;
+            temp = temp->next;
+            counter++;
+        }
+    }
 }
 
 void layoutPrint(Node* columns[7]) {
@@ -89,6 +99,7 @@ int main() {
     //  char filename[100];
     //  printf("Enter file name to load deck: ");
     // scanf("%s", filename);
+    int playPhase = 0;
     srand(time(NULL));
     Node *deck = load_deck_from_file("deck.txt");
     Node* columns[7]={NULL};
@@ -108,24 +119,52 @@ int main() {
         scanf("%3s", input);
 
         if (strcmp(input, "SW") == 0) {
-            flipCards(columns, 1);
-            printf("Cards Shown");
+            if(playPhase==1){
+                printf("Cant use commands, game is in play phase. Press Q to exit the Play Phase.");
+            } else {
+                flipCards(columns, 1);
+                printf("Cards Shown");
+            }
         } else if (strcmp(input, "HC") == 0) {
-            flipCards(columns, 0);
-            printf("Cards Hidden");
+            if(playPhase==1){
+                printf("Cant use commands, game is in play phase. Press Q to exit the Play Phase.");
+            } else {
+                flipCards(columns, 0);
+                printf("Cards Hidden");
+            }
         } else if (strcmp(input, "SI") == 0) {
-            deck = rebuildDeckStructure(columns);
-            deck = siSplit(deck);
-            layout(deck, columns);
-            printf("Cards Split Shuffled");
-        } else if (strcmp(input, "SR") == 0) {
-            deck = load_deck_from_file("deck.txt");
-            deck=shuffleDeck(deck);
-            layout(deck,columns);
-            //flipCards(columns,1);
-            printf("Deck Shuffled");
+            if(playPhase==1){
+                printf("Cant use commands, game is in play phase. Press Q to exit the Play Phase.");
+            } else {
+                deck = rebuildDeckStructure(columns);
+                deck = siSplit(deck);
+                layout(deck, columns);
+                printf("Cards Split Shuffled");
+            }
+        } else if (strcmp(input, "P") == 0) {
+            if(!playPhase){
+                playPhase=1;
+                layout(deck, columns);
+                printf("Play phase has begun.");
+            } else {
+                printf("Game is currently in play phase.");
+            }
+        }else if (strcmp(input, "SR") == 0) {
+            if(playPhase==1){
+                printf("Cant use commands, game is in play phase. Press Q to exit the Play Phase.");
+            } else {
+                deck = load_deck_from_file("deck.txt");
+                deck = shuffleDeck(deck);
+                layout(deck, columns);
+                //flipCards(columns,1);
+                printf("Deck Shuffled");
+            }
         } else if (strcmp(input, "QQ") == 0) {
-            break;
+            if(playPhase==1){
+                printf("Cant use commands, game is in play phase. Press Q to exit the Play Phase.");
+            } else {
+                break;
+            }
         }
         else if (strncmp(input, "SD", 2) == 0) {
             char filename[50] = "cards.txt"; // Default filename
