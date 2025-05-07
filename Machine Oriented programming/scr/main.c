@@ -103,7 +103,7 @@ int main() {
 
         layoutPrint(columns);
         //print_deck(deck);
-        printf("\nEnter SW to Show Cards, HC to Hide Cards, SR to Shuffle Cards, SD <filename> to Save Deck, or QQ to EXIT.\n");
+        printf("\nEnter SW to Show Cards, HC to Hide Cards, SR to Shuffle Cards, SI to Split and Shuffle Cards, SD <filename> to Save Deck, or QQ to EXIT.\n");
         printf("Enter Input:  ");
         scanf("%3s", input);
 
