@@ -110,11 +110,15 @@ int main() {
 
     while (1) {
         //system("cls");
-        for (int i = 0; i < 40; i++) printf("\n");
+        for (int i = 0; i < 10; i++) printf("\n");
 
         layoutPrint(columns);
         //print_deck(deck);
-        printf("\nEnter SW to Show Cards, HC to Hide Cards, SR to Shuffle Cards, SI to Split and Shuffle Cards, SD <filename> to Save Deck, or QQ to EXIT.\n");
+        if(playPhase==0) {
+            printf("\nEnter SW to Show Cards, HC to Hide Cards, SR to Shuffle Cards, SI to Split and Shuffle Cards, SD <filename> to Save Deck and P to enter the Play Phase or QQ to EXIT.\n");
+        } else{
+            printf("Game is in Start Up Phase. Enter Q to exit to the start up phase.\n");
+        }
         printf("Enter Input:  ");
         scanf("%3s", input);
 
@@ -149,7 +153,14 @@ int main() {
             } else {
                 printf("Game is currently in play phase.");
             }
-        }else if (strcmp(input, "SR") == 0) {
+        } else if (strcmp(input, "Q") == 0) {
+            if(playPhase==1) {
+                playPhase = 0;
+                printf("The Play Phase has been exited.");
+            } else {
+                printf("Game is not currently in Play phase.");
+            }
+        } else if (strcmp(input, "SR") == 0) {
             if(playPhase==1){
                 printf("Cant use commands, game is in play phase. Press Q to exit the Play Phase.");
             } else {
