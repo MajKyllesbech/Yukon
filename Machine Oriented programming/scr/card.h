@@ -22,3 +22,4 @@ Node* shuffleDeck(Node* deck);
 Node* siSplit(Node* deck);
 
 Node* rebuildDeckStructure(Node* columns[7]);
+void save_deck_to_file(const char *filename, Node *deck);
