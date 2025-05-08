@@ -109,6 +109,36 @@ void foundationsLayout(Node* foundationSpaces[4]){
     printf("\n");
 }
 
+int movingCards(Node* columns[7], int fromColumn, char rank, char suit, int toColumn) {
+    Node *current = columns[fromColumn];
+    Node* prev = NULL;
+
+    while(current){
+        if(current->card.rank==rank && current->card.suit==suit){
+            break;
+        }
+        prev=current;
+        current=current->next;
+    }
+    if(!current){
+        printf("Card not in column.%d\n", fromColumn+1);
+        return 0;
+    }
+    if(prev==NULL){
+        columns[fromColumn]=NULL;
+    }else{
+        prev->next=NULL;
+    }
+    if(columns[toColumn]==NULL){
+        columns[toColumn]=current;
+    } else{
+        Node* endOf = columns[toColumn];
+        while(endOf->next)endOf=endOf->next;
+        endOf->next=current;
+    }
+    printf("Moved cards from C%d:%c%c to C%d\n", fromColumn+1, rank, suit, toColumn+1);
+    return 1;
+}
 int main() {
     //  char filename[100];
     //  printf("Enter file name to load deck: ");
@@ -121,7 +151,7 @@ int main() {
     layout(deck, columns);
     //layoutPrint(columns);
     flipCards(columns,1); //hidden cards
-    char input[8];
+    char input[32];
 
     while (1) {
         //system("cls");
@@ -200,6 +230,17 @@ int main() {
                 sscanf(input + 3, "%s", filename);
             }
             save_deck_to_file(filename, deck);
+        }
+        int fromColumn, toColumn;
+        char rank, suit;
+        if(sscanf(input, "C%d:%c%c->C%d", &fromColumn,&rank,&suit,&toColumn)==4){
+            if(fromColumn>=1&&fromColumn<=7&&toColumn>=1&&toColumn<=7){
+                int result = movingCards(columns,fromColumn-1,rank,suit,toColumn-1);
+                if(result)
+                    printf("Completed\n");
+            }else{
+                printf("Columns between 1 and 7.");
+            }
         }
 }
 
