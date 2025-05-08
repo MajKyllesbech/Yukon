@@ -142,6 +142,84 @@ int movingCards(Node* columns[7], int fromColumn, char rank, char suit, int toCo
     printf("Moved cards from C%d:%c%c to C%d\n", fromColumn+1, rank, suit, toColumn+1);
     return 1;
 }
+
+int rankOrder(char rank){
+    const char* ranks = "A23456789TJQK";
+    for(int i = 0; i<13; i++){
+        if(ranks[i]==rank) return i;
+    }
+    return -1;
+}
+
+int moveCardToFoundation(Node* columns[7], Node* foundationSpaces[4], int fromColumn, char rank, char suit, int foundationIndex){
+    Node* current = columns[fromColumn];
+    Node* prev = NULL;
+    while(current){
+        if(current->card.rank==rank&&current->card.suit==suit)
+            break;
+        prev=current;
+        current=current->next;
+    }
+
+    if(prev==NULL){
+        columns[fromColumn]=NULL;
+    }else {
+        prev->next=NULL;
+        if(prev->face_up==0){
+            prev->face_up=1;
+        }
+    }
+    current->next=NULL;
+    if(foundationSpaces[foundationIndex]==NULL){
+        foundationSpaces[foundationIndex]=current;
+    } else{
+        Node* f = foundationSpaces[foundationIndex];
+        while(f->next)f=f->next;
+        f->next=current;
+    }
+    printf("Moved %c%c from c%d to F%d\n", rank, suit, fromColumn+1, foundationIndex +1);
+    return 1;
+   /* if(!current){
+        printf("Card not in Column\n");
+        return 0;
+    }
+    if(current->next!=NULL){
+        printf("Only bottom card is movable.\n");
+        return 0;
+    }
+    Node* top = foundationSpaces[foundationIndex];
+    if(top==NULL){
+        if(rank!='A'){
+            printf("First card moved to Foundation has to be an Ace.");
+            return 0;
+        }
+    } else{
+        while(top->next)top=top->next;
+        if(top->card.suit!=suit|| rankOrder(rank)!= rankOrder(top->card.rank)+1){
+            printf("Card must be the same suit, and must be one rank higher.\n");
+            return 0;
+        }
+    }*/
+    if(prev==NULL){
+        columns[fromColumn]=NULL;
+    }else {
+        prev->next=NULL;
+        if(prev->face_up==0){
+            prev->face_up=1;
+        }
+    }
+    current->next=NULL;
+    if(foundationSpaces[foundationIndex]==NULL){
+        foundationSpaces[foundationIndex]=current;
+    }else{
+        Node* f = foundationSpaces[foundationIndex];
+        while(f->next)f=f->next;
+        f->next=current;
+    }
+    printf("Moved %c%c from C%d to F%d\n", rank, suit, fromColumn+1,foundationIndex+1);
+    return 1;
+}
+
 int main() {
     //  char filename[100];
     //  printf("Enter file name to load deck: ");
@@ -236,6 +314,7 @@ int main() {
         }
         int fromColumn, toColumn;
         char rank, suit;
+        int foundationIndex;
         if(sscanf(input, "C%d:%c%c->C%d", &fromColumn,&rank,&suit,&toColumn)==4){
             if(fromColumn>=1&&fromColumn<=7&&toColumn>=1&&toColumn<=7){
                 int result = movingCards(columns,fromColumn-1,rank,suit,toColumn-1);
@@ -245,7 +324,15 @@ int main() {
                 printf("Columns between 1 and 7.");
             }
         }
-}
+        if(sscanf(input, "C%d:%c%c->F%d", &fromColumn,&rank,&suit,&foundationIndex)==4){
+            if(fromColumn>=1 && fromColumn<=7&&foundationIndex>=1&&foundationIndex<=4){
+                moveCardToFoundation(columns, foundationSpaces, fromColumn-1, rank, suit, foundationIndex-1);
+            }else{
+                printf("Invalid.\n");
+            }
+        }
+
+    }
 
 
     /*  if (deck != NULL) {
