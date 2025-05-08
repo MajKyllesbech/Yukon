@@ -6,6 +6,7 @@
 #include <time.h>
 
 
+
 extern Node* load_deck_from_file(const char* filename);
 extern void print_deck(Node* head);
 
@@ -95,19 +96,18 @@ void layoutPrint(Node* columns[7]) {
    }
 }
 
-void foundationsLayout(Node* foundationSpaces[4]){
-    printf("\nF1   F2   F3   F4\n");
-    for(int i = 0; i < 4; i++){
-        if(foundationSpaces[i]){
-            Node* top = foundationSpaces[i];
-            while (top->next) top = top->next;
-            printf(" %c%c  ", top->card.rank, top->card.suit);
-        }else{
-            printf("[ ]  ");
+void foundationsLayout(Node* foundationSpaces[4]) {
+    for (int i = 0; i < 4; i++) {
+     printf("F%d: ", i+1);
+            Node* current = foundationSpaces[i];
+            while (current!=NULL){
+                printf("%c%c ", current->card.rank, current->card.suit);
+                current = current->next;
         }
+        printf("\n");
     }
-    printf("\n");
 }
+
 
 int movingCards(Node* columns[7], int fromColumn, char rank, char suit, int toColumn) {
     Node *current = columns[fromColumn];
@@ -161,6 +161,28 @@ int moveCardToFoundation(Node* columns[7], Node* foundationSpaces[4], int fromCo
         current=current->next;
     }
 
+    if(!current){
+        printf("Card not in Column\n");
+        return 0;
+    }
+    if(current->next!=NULL){
+        printf("Only bottom card is movable.\n");
+        return 0;
+    }
+    Node* top = foundationSpaces[foundationIndex];
+    if(top==NULL){
+        if(rank!= 'A'){
+            printf("First card moved to Foundation has to be an Ace.");
+            return 0;
+        }
+    } else{
+        while(top->next)top=top->next;
+        if(top->card.suit!=suit|| rankOrder(rank)!= rankOrder(top->card.rank)+1){
+            printf("Card must be the same suit, and must be one rank higher.\n");
+            return 0;
+        }
+    }
+
     if(prev==NULL){
         columns[fromColumn]=NULL;
     }else {
@@ -179,46 +201,54 @@ int moveCardToFoundation(Node* columns[7], Node* foundationSpaces[4], int fromCo
     }
     printf("Moved %c%c from c%d to F%d\n", rank, suit, fromColumn+1, foundationIndex +1);
     return 1;
-   /* if(!current){
-        printf("Card not in Column\n");
+}
+
+int moveFromFoundation(Node* foundationSpaces[4], Node* columns[7], int foundationIndex, int toColumn) {
+    if (foundationSpaces[foundationIndex] == NULL) {
+        printf("No card available.\n", foundationIndex + 1);
         return 0;
     }
-    if(current->next!=NULL){
-        printf("Only bottom card is movable.\n");
-        return 0;
+    Node *current = foundationSpaces[foundationIndex];
+    Node *prev = NULL;
+    while (current->next != NULL) {
+        prev = current;
+        current = current->next;
     }
-    Node* top = foundationSpaces[foundationIndex];
-    if(top==NULL){
-        if(rank!='A'){
-            printf("First card moved to Foundation has to be an Ace.");
+    Node *targetColumn = columns[toColumn];
+    if (targetColumn != NULL) {
+        Node *bottom = targetColumn;
+        while (bottom->next)bottom = bottom->next;
+        if (rankOrder(bottom->card.rank) != rankOrder(current->card.rank) + 1) {
+            printf("Card must be one rank lower than target column card.\n");
+            return 0;
+
+        }
+        char suit1 = current->card.suit;
+        char suit2 = bottom->card.suit;
+        int sameSuit = (suit1 == 'H' || suit1 == 'D') == (suit2 == 'H' || suit2 == 'D');
+        if (sameSuit) {
+            printf("Move must be a different suit.\n");
             return 0;
         }
-    } else{
-        while(top->next)top=top->next;
-        if(top->card.suit!=suit|| rankOrder(rank)!= rankOrder(top->card.rank)+1){
-            printf("Card must be the same suit, and must be one rank higher.\n");
-            return 0;
-        }
-    }*/
+    }
     if(prev==NULL){
-        columns[fromColumn]=NULL;
-    }else {
+        foundationSpaces[foundationIndex]=NULL;
+    }else{
         prev->next=NULL;
-        if(prev->face_up==0){
-            prev->face_up=1;
-        }
     }
     current->next=NULL;
-    if(foundationSpaces[foundationIndex]==NULL){
-        foundationSpaces[foundationIndex]=current;
-    }else{
-        Node* f = foundationSpaces[foundationIndex];
-        while(f->next)f=f->next;
-        f->next=current;
+    if(columns[toColumn]==NULL){
+        columns[toColumn]=current;
+    }else {
+        Node* tail = columns[toColumn];
+        while(tail->next)tail=tail->next;
+        tail->next=current;
     }
-    printf("Moved %c%c from C%d to F%d\n", rank, suit, fromColumn+1,foundationIndex+1);
-    return 1;
+    current->face_up=1;
+    printf("Moved %c%c from F%d to C%d\n", current->card.rank, current->card.suit, foundationIndex+1, toColumn+1);
 }
+
+
 
 int main() {
     //  char filename[100];
@@ -227,11 +257,11 @@ int main() {
     int playPhase = 0;
     srand(time(NULL));
     Node *deck = load_deck_from_file("deck.txt");
-    Node* columns[7]={NULL};
-    Node* foundationSpaces[4] = {NULL};
+    Node *columns[7] = {NULL};
+    Node *foundationSpaces[4] = {NULL};
     layout(deck, columns);
     //layoutPrint(columns);
-    flipCards(columns,1); //hidden cards
+    flipCards(columns, 1); //hidden cards
     char input[32];
 
     while (1) {
@@ -241,30 +271,30 @@ int main() {
         layoutPrint(columns);
         foundationsLayout(foundationSpaces);
         //print_deck(deck);
-        if(playPhase==0) {
+        if (playPhase == 0) {
             printf("\nEnter SW to Show Cards, HC to Hide Cards, SR to Shuffle Cards, SI to Split and Shuffle Cards, SD <filename> to Save Deck and P to enter the Play Phase or QQ to EXIT.\n");
-        } else{
+        } else {
             printf("Game is in Start Up Phase. Enter Q to exit to the start up phase.\n");
         }
         printf("Enter Input:  ");
         scanf("%32s", input);
 
         if (strcmp(input, "SW") == 0) {
-            if(playPhase==1){
+            if (playPhase == 1) {
                 printf("Cant use this command, game is in play phase. Press Q to exit the Play Phase.");
             } else {
                 flipCards(columns, 1);
                 printf("Cards Shown");
             }
         } else if (strcmp(input, "HC") == 0) {
-            if(playPhase==1){
+            if (playPhase == 1) {
                 printf("Cant use this command, game is in play phase. Press Q to exit the Play Phase.");
             } else {
                 flipCards(columns, 0);
                 printf("Cards Hidden");
             }
         } else if (strcmp(input, "SI") == 0) {
-            if(playPhase==1){
+            if (playPhase == 1) {
                 printf("Cant use this command, game is in play phase. Press Q to exit the Play Phase.");
             } else {
                 deck = rebuildDeckStructure(columns);
@@ -273,22 +303,22 @@ int main() {
                 printf("Cards Split Shuffled");
             }
         } else if (strcmp(input, "P") == 0) {
-            if(!playPhase){
-                playPhase=1;
+            if (!playPhase) {
+                playPhase = 1;
                 layout(deck, columns);
                 printf("Play phase has begun.");
             } else {
                 printf("Game is currently in play phase.");
             }
         } else if (strcmp(input, "Q") == 0) {
-            if(playPhase==1) {
+            if (playPhase == 1) {
                 playPhase = 0;
                 printf("The Play Phase has been exited.");
             } else {
                 printf("Game is not currently in Play phase.");
             }
         } else if (strcmp(input, "SR") == 0) {
-            if(playPhase==1){
+            if (playPhase == 1) {
                 printf("Cant use this command, game is in play phase. Press Q to exit the Play Phase.");
             } else {
                 deck = load_deck_from_file("deck.txt");
@@ -298,13 +328,12 @@ int main() {
                 printf("Deck Shuffled");
             }
         } else if (strcmp(input, "QQ") == 0) {
-            if(playPhase==1){
+            if (playPhase == 1) {
                 printf("Cant use this command, game is in play phase. Press Q to exit the Play Phase.");
             } else {
                 break;
             }
-        }
-        else if (strncmp(input, "SD", 2) == 0) {
+        } else if (strncmp(input, "SD", 2) == 0) {
             char filename[50] = "cards.txt"; // Default filename
             if (strlen(input) > 3) {
                 // Extract the filename (skip "SD" and the space)
@@ -315,24 +344,33 @@ int main() {
         int fromColumn, toColumn;
         char rank, suit;
         int foundationIndex;
-        if(sscanf(input, "C%d:%c%c->C%d", &fromColumn,&rank,&suit,&toColumn)==4){
-            if(fromColumn>=1&&fromColumn<=7&&toColumn>=1&&toColumn<=7){
-                int result = movingCards(columns,fromColumn-1,rank,suit,toColumn-1);
-                if(result)
+        if (sscanf(input, "C%d:%c%c->C%d", &fromColumn, &rank, &suit, &toColumn) == 4) {
+            if (fromColumn >= 1 && fromColumn <= 7 && toColumn >= 1 && toColumn <= 7) {
+                int result = movingCards(columns, fromColumn - 1, rank, suit, toColumn - 1);
+                if (result)
                     printf("Completed\n");
-            }else{
+            } else {
                 printf("Columns between 1 and 7.");
             }
         }
-        if(sscanf(input, "C%d:%c%c->F%d", &fromColumn,&rank,&suit,&foundationIndex)==4){
-            if(fromColumn>=1 && fromColumn<=7&&foundationIndex>=1&&foundationIndex<=4){
-                moveCardToFoundation(columns, foundationSpaces, fromColumn-1, rank, suit, foundationIndex-1);
-            }else{
+        if (sscanf(input, "C%d:%c%c->F%d", &fromColumn, &rank, &suit, &foundationIndex) == 4) {
+            if (fromColumn >= 1 && fromColumn <= 7 && foundationIndex >= 1 && foundationIndex <= 4) {
+                moveCardToFoundation(columns, foundationSpaces, fromColumn - 1, rank, suit, foundationIndex - 1);
+            } else {
                 printf("Invalid.\n");
             }
         }
-
+        if (sscanf(input, "F%d->C%d", &foundationIndex, &toColumn) == 2) {
+            if (foundationIndex >= 1 && foundationIndex <= 4 && toColumn >= 1 && toColumn <= 7) {
+                moveFromFoundation(foundationSpaces, columns, foundationIndex - 1, toColumn - 1);
+            } else {
+                printf("Invalid");
+            }
+        }
     }
+
+
+
 
 
     /*  if (deck != NULL) {
