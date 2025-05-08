@@ -129,6 +129,9 @@ int movingCards(Node* columns[7], int fromColumn, char rank, char suit, int toCo
     }else{
         prev->next=NULL;
     }
+    if(prev!=NULL && prev->face_up==0){
+        prev->face_up=1;
+    }
     if(columns[toColumn]==NULL){
         columns[toColumn]=current;
     } else{
