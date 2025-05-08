@@ -107,7 +107,13 @@ void foundationsLayout(Node* foundationSpaces[4]) {
         printf("\n");
     }
 }
-
+int rankOrder(char rank){
+    const char* ranks = "A23456789TJQK";
+    for(int i = 0; i<13; i++){
+        if(ranks[i]==rank) return i;
+    }
+    return -1;
+}
 
 int movingCards(Node* columns[7], int fromColumn, char rank, char suit, int toColumn) {
     Node *current = columns[fromColumn];
@@ -120,6 +126,25 @@ int movingCards(Node* columns[7], int fromColumn, char rank, char suit, int toCo
         prev=current;
         current=current->next;
     }
+
+    if(columns[toColumn] != NULL){
+        Node* bottom = columns[toColumn];
+        while(bottom->next)bottom= bottom->next;
+
+        if(rankOrder(bottom->card.rank)!= rankOrder(current->card.rank)+1){
+            printf("Invalid Move\n");
+            return 0;
+        }
+        int sameSuit1=((bottom->card.suit=='H'|| bottom->card.suit=='D')==(current->card.suit=='H'||current->card.suit
+                =='D'));
+        if(sameSuit1){
+            printf("Invalid.\n");
+            return 0;
+        }
+
+    }
+
+
     if(!current){
         printf("Card not in column.%d\n", fromColumn+1);
         return 0;
@@ -143,13 +168,6 @@ int movingCards(Node* columns[7], int fromColumn, char rank, char suit, int toCo
     return 1;
 }
 
-int rankOrder(char rank){
-    const char* ranks = "A23456789TJQK";
-    for(int i = 0; i<13; i++){
-        if(ranks[i]==rank) return i;
-    }
-    return -1;
-}
 
 int moveCardToFoundation(Node* columns[7], Node* foundationSpaces[4], int fromColumn, char rank, char suit, int foundationIndex){
     Node* current = columns[fromColumn];
