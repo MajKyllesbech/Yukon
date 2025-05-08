@@ -166,7 +166,7 @@ int main() {
             printf("Game is in Start Up Phase. Enter Q to exit to the start up phase.\n");
         }
         printf("Enter Input:  ");
-        scanf("%3s", input);
+        scanf("%32s", input);
 
         if (strcmp(input, "SW") == 0) {
             if(playPhase==1){
