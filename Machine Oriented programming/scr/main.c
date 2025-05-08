@@ -95,6 +95,20 @@ void layoutPrint(Node* columns[7]) {
    }
 }
 
+void foundationsLayout(Node* foundationSpaces[4]){
+    printf("\nF1   F2   F3   F4\n");
+    for(int i = 0; i < 4; i++){
+        if(foundationSpaces[i]){
+            Node* top = foundationSpaces[i];
+            while (top->next) top = top->next;
+            printf(" %c%c  ", top->card.rank, top->card.suit);
+        }else{
+            printf("[ ]  ");
+        }
+    }
+    printf("\n");
+}
+
 int main() {
     //  char filename[100];
     //  printf("Enter file name to load deck: ");
@@ -103,6 +117,7 @@ int main() {
     srand(time(NULL));
     Node *deck = load_deck_from_file("deck.txt");
     Node* columns[7]={NULL};
+    Node* foundationSpaces[4] = {NULL};
     layout(deck, columns);
     //layoutPrint(columns);
     flipCards(columns,1); //hidden cards
@@ -113,6 +128,7 @@ int main() {
         for (int i = 0; i < 10; i++) printf("\n");
 
         layoutPrint(columns);
+        foundationsLayout(foundationSpaces);
         //print_deck(deck);
         if(playPhase==0) {
             printf("\nEnter SW to Show Cards, HC to Hide Cards, SR to Shuffle Cards, SI to Split and Shuffle Cards, SD <filename> to Save Deck and P to enter the Play Phase or QQ to EXIT.\n");
