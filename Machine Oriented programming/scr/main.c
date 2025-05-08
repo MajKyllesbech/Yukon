@@ -18,11 +18,6 @@ void flipCards(Node* columns[7], int face_up){
             temp=temp->next;
         }
     }
-   /* Node* temp = deck;
-    while(temp != NULL){
-        temp->face_up=face_up;
-        temp = temp->next;
-    }*/
 }
 
 void layout(Node* deck, Node* columns[7]){
@@ -131,7 +126,7 @@ int movingCards(Node* columns[7], int fromColumn, char rank, char suit, int toCo
         Node* bottom = columns[toColumn];
         while(bottom->next)bottom= bottom->next;
 
-        if(rankOrder(bottom->card.rank)!= rankOrder(current->card.rank)+1){
+        if(rankOrder(bottom->card.rank)!= rankOrder(current->card.rank)-1){
             printf("Invalid Move\n");
             return 0;
         }
@@ -269,26 +264,22 @@ int moveFromFoundation(Node* foundationSpaces[4], Node* columns[7], int foundati
 
 
 int main() {
-    //  char filename[100];
-    //  printf("Enter file name to load deck: ");
-    // scanf("%s", filename);
     int playPhase = 0;
     srand(time(NULL));
     Node *deck = load_deck_from_file("deck.txt");
     Node *columns[7] = {NULL};
     Node *foundationSpaces[4] = {NULL};
     layout(deck, columns);
-    //layoutPrint(columns);
     flipCards(columns, 1); //hidden cards
     char input[32];
 
     while (1) {
-        //system("cls");
+
         for (int i = 0; i < 10; i++) printf("\n");
 
         layoutPrint(columns);
         foundationsLayout(foundationSpaces);
-        //print_deck(deck);
+
         if (playPhase == 0) {
             printf("\nEnter SW to Show Cards, HC to Hide Cards, SR to Shuffle Cards, SI to Split and Shuffle Cards, SD <filename> to Save Deck and P to enter the Play Phase or QQ to EXIT.\n");
         } else {
@@ -342,7 +333,6 @@ int main() {
                 deck = load_deck_from_file("deck.txt");
                 deck = shuffleDeck(deck);
                 layout(deck, columns);
-                //flipCards(columns,1);
                 printf("Deck Shuffled");
             }
         } else if (strcmp(input, "QQ") == 0) {
@@ -386,29 +376,6 @@ int main() {
             }
         }
     }
-
-
-
-
-
-    /*  if (deck != NULL) {
-        Node* temp = deck;
-        print_deck(deck);
-         //Flip cards face up
-         char input[10];
-         printf("Type ""SW"" to flip cards:  ");
-        scanf("%3s",input);
-
-        if(strcmp(input, "SW")==0){
-         //   Node* temp = deck;
-            while (temp != NULL) {
-                temp->face_up = 1;
-                temp = temp->next;
-            }
-        }
-
-        print_deck(deck);
-   }*/
 
   return 0;
 }
